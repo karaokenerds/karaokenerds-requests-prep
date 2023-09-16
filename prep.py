@@ -72,7 +72,7 @@ def download_audio(youtube_id, filename):
                 "preferredquality": "192",
             }
         ],
-        "outtmpl": f"{filename}.%(ext)s",
+        "outtmpl": f"{filename}",
         "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
     }
 
@@ -97,16 +97,20 @@ def main():
     for artist, title in top_requests:
         query = f"{artist} {title}"
         
-        logger.info(f"\nProcessing song: {title} by {artist}")
+        logger.info(f"Processing song: {title} by {artist}")
         
-        logger.info("Step 2 & 3: Searching YouTube for video ID...")
+        filename = f"audio/{artist} - {title}.wav"
+        if os.path.exists(filename): 
+            logging.info(f"File {filename} already exists. Skipping download.")
+            return
+        
+        logger.info("Searching YouTube for video ID...")
         youtube_id = get_youtube_id(query)
         if youtube_id:
-            logger.info("Step 4: Downloading audio from YouTube...")
-            filename = f"{artist} - {title} ({youtube_id})"
+            logger.info("Downloading audio from YouTube to filename {filename}")
             download_audio(youtube_id, filename)
             
-            logger.info("Step 5: Fetching lyrics from Genius...")
+            logger.info("Fetching lyrics from Genius...")
             fetch_lyrics_from_genius(artist, title)
         else:
             logger.warning(f"Skipping {title} by {artist} due to missing YouTube ID.")

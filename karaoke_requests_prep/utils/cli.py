@@ -42,7 +42,7 @@ def main():
 
     parser.add_argument(
         "--output_dir",
-        default=None,
+        default="karaoke",
         help="Optional: directory to write output files (default: <current dir>/karaoke). Example: --output_dir=/app/karaoke",
     )
 
@@ -72,6 +72,12 @@ def main():
         help="Optional: enable or disable normalization during separation (default: %(default)s). Example: --normalize=False",
     )
 
+    parser.add_argument(
+        "--create_track_subfolders",
+        action="store_true",
+        help="Optional: create subfolders in the output folder for each track (default: %(default)s). Example: --create_track_subfolders=true",
+    )
+
     args = parser.parse_args()
 
     log_level = getattr(logging, args.log_level.upper())
@@ -94,10 +100,19 @@ def main():
         use_coreml=args.use_coreml,
         normalization_enabled=args.normalize,
         denoise_enabled=args.denoise,
+        create_track_subfolders=args.create_track_subfolders,
     )
     output_files = kprep.prep()
 
-    logger.info(f"RequestsPrep complete! Output file(s): {' '.join(output_files)}")
+    logger.info(f"KaraokeNerds Requests Prep complete! Output files:")
+
+    for artist_title, track in output_files.items():
+        logger.info(f"")
+        logger.info(f"Track: {artist_title} ({track['votes']} votes)")
+        logger.info(f" YouTube Audio: {track['youtube_audio']}")
+        logger.info(f" Lyrics: {track['lyrics']}")
+        logger.info(f" Instrumental: {track['instrumental_audio']}")
+        logger.info(f" Vocals: {track['vocals_audio']}")
 
 
 if __name__ == "__main__":

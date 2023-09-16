@@ -1,4 +1,6 @@
+.vscode/
+.DS_Store
+karaokenerds_cache.html
 audio/
 lyrics/
-karaokenerds_cache.html
-.vscode/
+karaoke/

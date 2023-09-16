@@ -1,5 +1,6 @@
 import requests
 import os
+import glob
 from bs4 import BeautifulSoup
 import yt_dlp as ydl_module
 import logging
@@ -42,24 +43,23 @@ def fetch_content_from_url(url):
             file.write(content)
         return content
 
-        
+
 def get_youtube_id(query):
-    ydl_opts = {'format': 'bestaudio', 'noplaylist': 'True', 'extract_flat': True}
+    ydl_opts = {"format": "bestaudio", "noplaylist": "True", "extract_flat": True}
     with ydl_module.YoutubeDL(ydl_opts) as ydl:
         try:
             # Try to directly get the video assuming the query might be a URL or video ID
             video = ydl.extract_info(query, download=False)
         except:
             # If direct retrieval fails, then search for it
-            video = ydl.extract_info(f"ytsearch1:{query}", download=False)['entries'][0]
+            video = ydl.extract_info(f"ytsearch1:{query}", download=False)["entries"][0]
         if video:
-            youtube_id = video.get('id')
+            youtube_id = video.get("id")
             return youtube_id
         else:
             logger.warning(f"No YouTube results found for query: {query}")
             logger.debug(f"info_dict: {info_dict}")
             return None
-
 
 
 def download_audio(youtube_id, filename):
@@ -73,7 +73,7 @@ def download_audio(youtube_id, filename):
             }
         ],
         "outtmpl": f"{filename}",
-        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
     }
 
     with ydl_module.YoutubeDL(ydl_opts) as youtube_dl_instance:
@@ -91,31 +91,57 @@ def fetch_lyrics_from_genius(artist, title):
         logger.warning("Could not find lyrics for %s by %s", title, artist)
 
 
+def sanitize_filename(filename):
+    """Replace or remove characters that are unsafe for filenames."""
+    # Replace problematic characters with underscores
+    for char in ["\\", "/", ":", "*", "?", '"', "<", ">", "|"]:
+        filename = filename.replace(char, "_")
+    # Remove any trailing periods or spaces
+    filename = filename.rstrip(". ")
+    return filename
+
+
 def main():
     top_requests = fetch_top_requests(URL)
     logger.info("Fetched top 30 song requests")
     for artist, title in top_requests:
         query = f"{artist} {title}"
-        
-        logger.info(f"Processing song: {title} by {artist}")
-        
-        filename = f"audio/{artist} - {title}.wav"
-        if os.path.exists(filename): 
-            logging.info(f"File {filename} already exists. Skipping download.")
-            return
-        
-        logger.info("Searching YouTube for video ID...")
-        youtube_id = get_youtube_id(query)
-        if youtube_id:
-            logger.info("Downloading audio from YouTube to filename {filename}")
-            download_audio(youtube_id, filename)
-            
-            logger.info("Fetching lyrics from Genius...")
-            fetch_lyrics_from_genius(artist, title)
-        else:
-            logger.warning(f"Skipping {title} by {artist} due to missing YouTube ID.")
-    logger.info("\nAll songs downloaded and lyrics fetched!")
 
+        logger.info(f"Processing song: {title} by {artist}")
+
+        sanitized_artist = sanitize_filename(artist)
+        sanitized_title = sanitize_filename(title)
+
+        filename_pattern = f"audio/{sanitized_artist} - {sanitized_title}*.wav"
+        existing_files = glob.glob(filename_pattern)
+        if existing_files:
+            logger.info(
+                f"File matching pattern {filename_pattern} already exists. Skipping download."
+            )
+
+        else:
+            logger.info(f"No existing audio found with pattern: {filename_pattern}")
+
+            logger.info("Searching YouTube for video ID...")
+            youtube_id = get_youtube_id(query)
+            if youtube_id:
+                filename = (
+                    f"audio/{sanitized_artist} - {sanitized_title} ({youtube_id}).wav"
+                )
+
+                logger.info("Downloading audio from YouTube to filename {filename}")
+                download_audio(youtube_id, filename)
+
+                logger.info("Fetching lyrics from Genius...")
+                fetch_lyrics_from_genius(artist, title)
+            else:
+                logger.warning(
+                    f"Skipping {title} by {artist} due to missing YouTube ID."
+                )
+
+    logger.info(
+        "Script finished, all songs downloaded, lyrics fetched and audio separated!"
+    )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "karaokenerds-requests-prep"
+version = "0.1.0"
+description = "A tool to download karaoke tracks based on requests on karaokenerds and fetch lyrics from Genius."
+authors = ["Andrew Beveridge <andrew@beveridge.uk>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "^2.26.0"
+beautifulsoup4 = "^4.10.0"
+yt-dlp = "^2022.8.1"
+lyricsgenius = "^3.0.1"
+fetch-lyrics-from-genius = "^0.1.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

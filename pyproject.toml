@@ -7,11 +7,11 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-requests = "^2.26.0"
-beautifulsoup4 = "^4.10.0"
-yt-dlp = "^2022.8.1"
-lyricsgenius = "^3.0.1"
-fetch-lyrics-from-genius = "^0.1.0"
+requests = "^2"
+beautifulsoup4 = "^4"
+yt-dlp = "^2023"
+lyricsgenius = "^3"
+fetch-lyrics-from-genius = "^0.1"
 
 [tool.poetry.dev-dependencies]
 

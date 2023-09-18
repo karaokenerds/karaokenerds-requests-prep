@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "karaokenerds-requests-prep"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool to download karaoke tracks based on requests on karaokenerds and fetch lyrics from Genius."
 authors = ["Andrew Beveridge <andrew@beveridge.uk>"]
 license = "MIT"

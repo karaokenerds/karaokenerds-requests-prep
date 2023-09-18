@@ -20,6 +20,7 @@ class KaraokeNerdsRequestsPrep:
         log_level=logging.DEBUG,
         log_formatter=None,
         model_name="UVR_MDXNET_KARA_2",
+        model_name_2="UVR-MDX-NET-Inst_HQ_3",
         model_file_dir="/tmp/audio-separator-models/",
         output_dir="karaoke",
         use_cuda=False,
@@ -45,6 +46,7 @@ class KaraokeNerdsRequestsPrep:
 
         self.limit = int(limit)
         self.model_name = model_name
+        self.model_name_2 = model_name_2
         self.model_file_dir = model_file_dir
         self.output_dir = output_dir
         self.use_cuda = use_cuda
@@ -149,17 +151,18 @@ class KaraokeNerdsRequestsPrep:
         filename = filename.rstrip(". ")
         return filename
 
-    def separate_audio(self, audio_file, instrumental_path, vocals_path):
+    def separate_audio(self, audio_file, model_name, instrumental_path, vocals_path):
         if audio_file is None or not os.path.isfile(audio_file):
             raise Exception("Error: Invalid audio source provided.")
 
         self.logger.debug(f"audio_file is valid file: {audio_file}")
 
-        self.logger.debug(f"instantiating Separator with model_name: {self.model_name} and instrumental_path: {instrumental_path}")
+        self.logger.debug(f"instantiating Separator with model_name: {model_name} and instrumental_path: {instrumental_path}")
         separator = Separator(
             audio_file,
-            logger=self.logger,
-            model_name=self.model_name,
+            log_level=self.log_level,
+            log_formatter=self.log_formatter,
+            model_name=model_name,
             model_file_dir=self.model_file_dir,
             output_format="FLAC",
             primary_stem_path=instrumental_path,
@@ -234,7 +237,7 @@ class KaraokeNerdsRequestsPrep:
         self.logger.info(f"All downloads complete! Beginning offline processes")
 
         for artist_title, track in processed_tracks.items():
-            self.logger.info(f"Separating audio for track: {track['title']} by {track['artist']} with votes: {track['votes']}")
+            self.logger.info(f"Separating audio twice for track: {track['title']} by {track['artist']} with votes: {track['votes']}")
 
             instrumental_path = os.path.join(track_output_dir, f"{artist_title} (Instrumental {self.model_name}).flac")
             vocals_path = os.path.join(track_output_dir, f"{artist_title} (Vocals {self.model_name}).flac")
@@ -242,10 +245,21 @@ class KaraokeNerdsRequestsPrep:
             if os.path.isfile(instrumental_path) and os.path.isfile(vocals_path):
                 self.logger.debug(f"Separated audio files already exist in output paths, skipping separation: {instrumental_path}")
             else:
-                self.separate_audio(processed_tracks[artist_title]["youtube_audio"], instrumental_path, vocals_path)
+                self.separate_audio(processed_tracks[artist_title]["youtube_audio"], self.model_name, instrumental_path, vocals_path)
 
             processed_tracks[artist_title]["instrumental_audio"] = instrumental_path
             processed_tracks[artist_title]["vocals_audio"] = vocals_path
+
+            instrumental_path_2 = os.path.join(track_output_dir, f"{artist_title} (Instrumental {self.model_name_2}).flac")
+            vocals_path_2 = os.path.join(track_output_dir, f"{artist_title} (Vocals {self.model_name_2}).flac")
+
+            if os.path.isfile(instrumental_path_2) and os.path.isfile(vocals_path_2):
+                self.logger.debug(f"Separated audio files already exist in output paths, skipping separation: {instrumental_path_2}")
+            else:
+                self.separate_audio(processed_tracks[artist_title]["youtube_audio"], self.model_name_2, instrumental_path_2, vocals_path_2)
+
+            processed_tracks[artist_title]["instrumental_audio_2"] = instrumental_path_2
+            processed_tracks[artist_title]["vocals_audio_2"] = vocals_path_2
 
         self.logger.info("Script finished, all songs downloaded, lyrics fetched and audio separated!")
 

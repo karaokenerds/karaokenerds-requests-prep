@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "karaokenerds-requests-prep"
-version = "0.1.1"
-description = "A tool to download karaoke tracks based on requests on karaokenerds and fetch lyrics from Genius."
+version = "0.2.0"
+description = "Prepare for bulk karaoke video creation, by downloading audio and lyrics for top requests on karaokenerds."
 authors = ["Andrew Beveridge <andrew@beveridge.uk>"]
 license = "MIT"
 readme = "README.md"
@@ -23,7 +23,7 @@ audio-separator = "^0.7"
 black = "^23"
 
 [tool.poetry.scripts]
-karaoke-requests-prep = 'karaoke_requests_prep.utils.cli:main'
+karaokenerds-requests-prep = 'karaoke_requests_prep.utils.cli:main'
 
 [tool.black]
 line-length = 140

@@ -14,7 +14,7 @@ def main():
 
     parser = argparse.ArgumentParser(
         description="Fetch audio and lyrics for requests from karaokenerds, to prepare for bulk karaoke video creation.",
-        formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, max_help_position=45),
+        formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, max_help_position=50),
     )
 
     parser.add_argument("limit", nargs="?", help="Number of requests to fetch.", default=argparse.SUPPRESS)
@@ -78,6 +78,23 @@ def main():
         help="Optional: create subfolders in the output folder for each track (default: %(default)s). Example: --create_track_subfolders=true",
     )
 
+    # Add an argument to skip the first X number of results
+    parser.add_argument(
+        "--skip",
+        type=int,
+        default=0,
+        help="Optional: skip the first X number of results. Example: --skip=10",
+    )
+
+    # Add an argument to choose the order for the "sort" URL parameter
+    valid_sort_options = ["votes", "tip", "views", "spotify", "date"]
+    parser.add_argument(
+        "--sort",
+        choices=valid_sort_options,
+        default="votes",
+        help="Optional: choose the order for the sort parameter (default: %(default)s). Valid options: " + ", ".join(valid_sort_options),
+    )
+
     args = parser.parse_args()
 
     log_level = getattr(logging, args.log_level.upper())
@@ -101,6 +118,8 @@ def main():
         normalization_enabled=args.normalize,
         denoise_enabled=args.denoise,
         create_track_subfolders=args.create_track_subfolders,
+        skip_num=args.skip,
+        sort_order=args.sort,
     )
     output_files = kprep.prep()
 

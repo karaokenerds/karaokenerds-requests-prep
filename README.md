@@ -4,7 +4,8 @@
 
 Prepare for bulk karaoke video creation, by downloading audio from YouTube and lyrics from Genius for [top requests on karaokenerds](https://karaokenerds.com/Request/?sort=votes).
 
-This was created with a single use case in mind - 
+This was created with a single use case in mind - to make it easier for me to prepare for bulk creation of karaoke videos while I'm offline (e.g. on a flight or train).
+It makes it easy to bulk prepare the top X requests by votes, tips, views, spotify rank etc. so I can then do the actual karaoke creation in a focused batch without internet.
 
 ## Features
 
@@ -14,6 +15,7 @@ This was created with a single use case in mind -
 - Multiple Audio Models: Runs audio separation with 2 different models (by default, `UVR_MDXNET_KARA_2` and `UVR-MDX-NET-Inst_HQ_3`) to give you options for the backing track.
 - Easy Configuration: Control the tool's behavior using command-line arguments.
 - Organized Outputs: Creates structured output directories for easy access to generated tracks and lyrics.
+- Internet First: Completes all operations which require internet first (quickly), in case user is preparing last-minute before a period of being offline!
 
 ## Installation 🛠️
 
@@ -29,36 +31,49 @@ You can install KaraokeNerds Requests Prep using pip:
 You can use Audio Separator via the command line:
 
 ```sh
-usage: karaokenerds-requests-prep [-h] [-v] [--log_level LOG_LEVEL] [--model_name MODEL_NAME] [--model_file_dir MODEL_FILE_DIR] [--output_dir OUTPUT_DIR] [--use_cuda]
-                             [--use_coreml] [--denoise DENOISE] [--normalize NORMALIZE] [--create_track_subfolders]
-                             [limit]
+usage: karaokenerds-requests-prep [-h] [-v] [--log_level LOG_LEVEL] [--model_name MODEL_NAME] [--model_file_dir MODEL_FILE_DIR] [--output_dir OUTPUT_DIR] [--use_cuda] [--use_coreml] [--denoise DENOISE] [--normalize NORMALIZE]
+                                  [--create_track_subfolders] [--skip SKIP_NUM] [--sort {votes,tip,views,spotify,date}]
+                                  [limit]
 
 Fetch audio and lyrics for requests from karaokenerds, to prepare for bulk karaoke video creation.
 
 positional arguments:
-  limit                            Number of requests to fetch.
+  limit                                  Number of requests to fetch.
 
 options:
-  -h, --help                       show this help message and exit
-  -v, --version                    show program's version number and exit
-  --log_level LOG_LEVEL            Optional: logging level, e.g. info, debug, warning (default: info). Example: --log_level=debug
-  --model_name MODEL_NAME          Optional: model name to be used for separation (default: UVR_MDXNET_KARA_2). Example: --model_name=UVR-MDX-NET-Inst_HQ_3
-  --model_file_dir MODEL_FILE_DIR  Optional: model files directory (default: /tmp/audio-separator-models/). Example: --model_file_dir=/app/models
-  --output_dir OUTPUT_DIR          Optional: directory to write output files (default: <current dir>/karaoke). Example: --output_dir=/app/karaoke
-  --use_cuda                       Optional: use Nvidia GPU with CUDA for separation (default: False). Example: --use_cuda=true
-  --use_coreml                     Optional: use Apple Silicon GPU with CoreML for separation (default: False). Example: --use_coreml=true
-  --denoise DENOISE                Optional: enable or disable denoising during separation (default: True). Example: --denoise=False
-  --normalize NORMALIZE            Optional: enable or disable normalization during separation (default: True). Example: --normalize=False
-  --create_track_subfolders        Optional: create subfolders in the output folder for each track (default: False). Example: --create_track_subfolders=true
+  -h, --help                             show this help message and exit
+  -v, --version                          show program's version number and exit
+  --log_level LOG_LEVEL                  Optional: logging level, e.g. info, debug, warning (default: info). Example: --log_level=debug
+  --model_name MODEL_NAME                Optional: model name to be used for separation (default: UVR_MDXNET_KARA_2). Example: --model_name=UVR-MDX-NET-Inst_HQ_3
+  --model_file_dir MODEL_FILE_DIR        Optional: model files directory (default: /tmp/audio-separator-models/). Example: --model_file_dir=/app/models
+  --output_dir OUTPUT_DIR                Optional: directory to write output files (default: <current dir>/karaoke). Example: --output_dir=/app/karaoke
+  --use_cuda                             Optional: use Nvidia GPU with CUDA for separation (default: False). Example: --use_cuda=true
+  --use_coreml                           Optional: use Apple Silicon GPU with CoreML for separation (default: False). Example: --use_coreml=true
+  --denoise DENOISE                      Optional: enable or disable denoising during separation (default: True). Example: --denoise=False
+  --normalize NORMALIZE                  Optional: enable or disable normalization during separation (default: True). Example: --normalize=False
+  --create_track_subfolders              Optional: create subfolders in the output folder for each track (default: False). Example: --create_track_subfolders=true
+  --skip SKIP_NUM                    Optional: skip the first X number of results. Example: --skip=10
+  --sort {votes,tip,views,spotify,date}  Optional: choose the order for the sort parameter (default: votes). Valid options: votes, tip, views, spotify, date
   ```
 
   Example:
 
 ```
-karaokenerds-requests-prep 10
+karaokenerds-requests-prep --sort votes 10
 ```
 
-This command will process the top 10 requests with the higest votes on Karaoke Nerds, downloading audio and lyrics for each and separating audio, ready for all 10 tracks to be created by whatever process you prefer for creating karaoke tracks!
+This command will process the top 10 requests with the highest votes on Karaoke Nerds, downloading audio and lyrics for each and separating audio, ready for all 10 tracks to be created by whatever process you prefer for creating karaoke tracks!
+
+By default, you'll then end up with a folder called `karaoke` with all of the input files ready for bulk karaoke track creation, neatly organised e.g.
+
+```
+├── Artist - Title (Instrumental UVR-MDX-NET-Inst_HQ_3).flac
+├── Artist - Title (Instrumental UVR_MDXNET_KARA_2).flac
+├── Artist - Title (Lyrics).txt
+├── Artist - Title (Vocals UVR-MDX-NET-Inst_HQ_3).flac
+├── Artist - Title (Vocals UVR_MDXNET_KARA_2).flac
+└── Artist - Title (YouTube CNUgemJBLTw).wav
+```
 
 ## Requirements 📋
 

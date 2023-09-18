@@ -2,13 +2,13 @@
 
 [[package]]
 name = "audio-separator"
-version = "0.7.2"
+version = "0.7.3"
 description = "Easy to use vocal separation on CLI or as a python package, using the amazing MDX-Net models from UVR trained by @Anjok07"
 optional = false
 python-versions = ">=3.9,<3.11"
 files = [
-    {file = "audio_separator-0.7.2-py3-none-any.whl", hash = "sha256:2ff994a7aaef47ebf33f57b69d944fdc8c633c930d0cf43f1cf27018fa458377"},
-    {file = "audio_separator-0.7.2.tar.gz", hash = "sha256:ac2666ea88dee22c0c8a14b7dc36e961952e5b513701270fe3cef2c2743cc953"},
+    {file = "audio_separator-0.7.3-py3-none-any.whl", hash = "sha256:1d44fc821ff67fe4240f40e4feb3003d7c923215ef82a57e0c37c972e0441885"},
+    {file = "audio_separator-0.7.3.tar.gz", hash = "sha256:0b04b192cab09c6bb82b83afa2c1ea5059dd636855dc87ff1f03d1c85d38632e"},
 ]
 
 [package.dependencies]
@@ -1342,13 +1342,13 @@ opt-einsum = ["opt-einsum (>=3.3)"]
 
 [[package]]
 name = "typing-extensions"
-version = "4.7.1"
-description = "Backported and Experimental Type Hints for Python 3.7+"
+version = "4.8.0"
+description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.7.1-py3-none-any.whl", hash = "sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36"},
-    {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
+    {file = "typing_extensions-4.8.0-py3-none-any.whl", hash = "sha256:8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0"},
+    {file = "typing_extensions-4.8.0.tar.gz", hash = "sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef"},
 ]
 
 [[package]]

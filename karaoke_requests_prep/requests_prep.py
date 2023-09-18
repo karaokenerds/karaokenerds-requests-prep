@@ -9,7 +9,7 @@ import lyricsgenius
 from slugify import slugify
 from audio_separator import Separator
 
-URL = "https://karaokenerds.com/Request/?sort=votes"
+BASE_URL = "https://karaokenerds.com/Request/"
 CACHE_FILE = "karaokenerds_cache.html"
 
 
@@ -28,6 +28,8 @@ class KaraokeNerdsRequestsPrep:
         normalization_enabled=True,
         denoise_enabled=True,
         create_track_subfolders=False,
+        skip_num=0,
+        sort_order="votes",
     ):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(log_level)
@@ -54,6 +56,8 @@ class KaraokeNerdsRequestsPrep:
         self.normalization_enabled = normalization_enabled
         self.denoise_enabled = denoise_enabled
         self.create_track_subfolders = create_track_subfolders
+        self.skip_num = skip_num
+        self.sort_order = sort_order
 
         if not os.path.exists(self.output_dir):
             self.logger.debug(f"Overall output dir {self.output_dir} did not exist, creating")
@@ -61,15 +65,23 @@ class KaraokeNerdsRequestsPrep:
         else:
             self.logger.debug(f"Overall output dir {self.output_dir} already exists")
 
-    def fetch_top_requests(self, url):
+    def fetch_top_requests(self):
+        url = f"{BASE_URL}?sort={self.sort_order}"
         self.logger.info(f"Fetching {self.limit} top requests from %s", url)
         html_content = self.fetch_content_from_url(url)
         soup = BeautifulSoup(html_content, "html.parser")
         table = soup.find("table", id="requests")
         rows = table.find("tbody").find_all("tr")
+
+        clip = self.limit + self.skip_num
         top_requests = [(row.find_all("td")[0].span.text, row.find_all("td")[1].a.text, row.find_all("td")[2].a.text) for row in rows][
-            : self.limit
+            :clip
         ]
+
+        if self.skip_num > 0:
+            self.logger.info(f"Skipping first {self.skip_num} requests based on --skip parameter")
+            top_requests = top_requests[self.skip_num :]  # Skip the first X results based on the --skip parameter
+
         return top_requests
 
     def fetch_content_from_url(self, url):
@@ -189,8 +201,9 @@ class KaraokeNerdsRequestsPrep:
     def prep(self):
         processed_tracks = {}
 
-        top_requests = self.fetch_top_requests(URL)
-        self.logger.info(f"Fetched top {self.limit} song requests")
+        top_requests = self.fetch_top_requests()
+
+        self.logger.info(f"Fetched {len(top_requests)} song requests, factoring in skip, sort and limit params")
 
         # Process all downloads (audio, lyrics) first before doing audio separation,
         # to prioritize operations requiring internet in case we're prepping in a hurry before an offline period such as a flight
@@ -216,10 +229,11 @@ class KaraokeNerdsRequestsPrep:
                 query = f"{artist} {title}"
                 youtube_id = self.get_youtube_id_for_top_search_result(query)
                 if youtube_id:
-                    youtube_audio_file = os.path.join(track_output_dir, f"{artist_title} (YouTube {youtube_id}).wav")
+                    youtube_audio_file = os.path.join(track_output_dir, f"{artist_title} (YouTube {youtube_id})")
 
                     self.logger.info("Downloading original audio from YouTube to filename {original_audio_filename}")
                     self.download_audio(youtube_id, youtube_audio_file)
+                    youtube_audio_file = youtube_audio_file + ".wav"
                 else:
                     self.logger.warning(f"Skipping {title} by {artist} due to missing YouTube ID.")
 

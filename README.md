@@ -77,7 +77,7 @@ By default, you'll then end up with a folder called `karaoke` with all of the in
 
 ## Requirements 📋
 
-Python <= 3.10 (one of the dependencies doesn't like 3.11 yet)
+Python >= 3.9
 
 Libraries: onnx, onnxruntime, numpy, soundfile, librosa, torch, wget, six
 

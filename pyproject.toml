@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "karaokenerds-requests-prep"
-version = "0.3.1"
+version = "0.3.2"
 description = "Prepare for bulk karaoke video creation, by downloading audio and lyrics for top requests on karaokenerds."
 authors = ["Andrew Beveridge <andrew@beveridge.uk>"]
 license = "MIT"
@@ -11,13 +11,13 @@ repository = "https://github.com/karaokenerds/karaokenerds-requests-prep"
 documentation = "https://github.com/karaokenerds/karaokenerds-requests-prep/blob/main/README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.11"
+python = ">=3.9"
 requests = "^2"
 beautifulsoup4 = "^4"
 yt-dlp = "*"
 lyricsgenius = "^3"
 fetch-lyrics-from-genius = "^0.1"
-audio-separator = "^0.7"
+audio-separator = "^0.8"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23"

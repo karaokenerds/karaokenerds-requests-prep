@@ -42,8 +42,8 @@ def main():
 
     parser.add_argument(
         "--output_dir",
-        default="karaoke",
-        help="Optional: directory to write output files (default: <current dir>/karaoke). Example: --output_dir=/app/karaoke",
+        default=".",
+        help="Optional: directory to write output files (default: <current dir>). Example: --output_dir=/app/karaoke",
     )
 
     parser.add_argument(

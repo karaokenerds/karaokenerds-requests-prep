@@ -176,7 +176,7 @@ class KaraokeNerdsRequestsPrep:
             log_formatter=self.log_formatter,
             model_name=model_name,
             model_file_dir=self.model_file_dir,
-            output_format="FLAC",
+            output_format="MP3",
             primary_stem_path=instrumental_path,
             secondary_stem_path=vocals_path,
         )
@@ -253,8 +253,8 @@ class KaraokeNerdsRequestsPrep:
         for artist_title, track in processed_tracks.items():
             self.logger.info(f"Separating audio twice for track: {track['title']} by {track['artist']} with votes: {track['votes']}")
 
-            instrumental_path = os.path.join(track_output_dir, f"{artist_title} (Instrumental {self.model_name}).flac")
-            vocals_path = os.path.join(track_output_dir, f"{artist_title} (Vocals {self.model_name}).flac")
+            instrumental_path = os.path.join(track_output_dir, f"{artist_title} (Instrumental {self.model_name}).mp3")
+            vocals_path = os.path.join(track_output_dir, f"{artist_title} (Vocals {self.model_name}).mp3")
 
             if os.path.isfile(instrumental_path) and os.path.isfile(vocals_path):
                 self.logger.debug(f"Separated audio files already exist in output paths, skipping separation: {instrumental_path}")
@@ -264,8 +264,8 @@ class KaraokeNerdsRequestsPrep:
             processed_tracks[artist_title]["instrumental_audio"] = instrumental_path
             processed_tracks[artist_title]["vocals_audio"] = vocals_path
 
-            instrumental_path_2 = os.path.join(track_output_dir, f"{artist_title} (Instrumental {self.model_name_2}).flac")
-            vocals_path_2 = os.path.join(track_output_dir, f"{artist_title} (Vocals {self.model_name_2}).flac")
+            instrumental_path_2 = os.path.join(track_output_dir, f"{artist_title} (Instrumental {self.model_name_2}).mp3")
+            vocals_path_2 = os.path.join(track_output_dir, f"{artist_title} (Vocals {self.model_name_2}).mp3")
 
             if os.path.isfile(instrumental_path_2) and os.path.isfile(vocals_path_2):
                 self.logger.debug(f"Separated audio files already exist in output paths, skipping separation: {instrumental_path_2}")

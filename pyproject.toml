@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "karaokenerds-requests-prep"
-version = "0.3.2"
+version = "0.3.3"
 description = "Prepare for bulk karaoke video creation, by downloading audio and lyrics for top requests on karaokenerds."
 authors = ["Andrew Beveridge <andrew@beveridge.uk>"]
 license = "MIT"
